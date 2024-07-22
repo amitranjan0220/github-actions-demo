@@ -49,21 +49,13 @@ jobs:
       - name: Terraform plan
         id: plan
         if: github.event_name == 'push'
-        run: terraform plan -out=tfplan
-   
-      - name: Format and Upload Plan
-        id: plan-output
-        run: |
-          terraform show -json tfplan > plan.json
-          echo '```' > plan.txt
-          terraform show -no-color tfplan >> plan.txt
-          echo '```' >> plan.txt
+        run: terraform plan -no-color -input=false
         continue-on-error: true
-        
+    
       - uses: actions/github-script@v6
-        if: github.event_name == 'push'
+        if: github.event_name == 'pull_request'
         env:
-          PLAN: "terraform\n${{ steps.plan-outputs.stdout }}"
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
           script: |
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
@@ -86,8 +78,11 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
-
-       
+ 
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+        
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply  tfplan
