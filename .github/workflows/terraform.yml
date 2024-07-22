@@ -86,11 +86,11 @@ jobs:
               body: output
             })
 
-      - name: Manual Approval
-        uses: trstringer/manual-approval@v1
+      - name: Wait for approval
+        uses: andstor/wait-for-approval@v1
         with:
-          secret: ${{ github.TOKEN }}
-          approvers: amitranjan0220
+          issue-number: ${{ steps.send_approval_request.outputs.number }}
+          repository-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy to production
         run: echo deploying
 
