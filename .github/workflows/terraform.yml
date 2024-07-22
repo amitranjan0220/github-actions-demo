@@ -1,8 +1,6 @@
 name: "Terraform CI CD using Github Actions"
 
-on: 
- workflow_dispatch:
- push:
+on: [push,workflow_dispatch]
 
 env:
  # verbosity setting for Terraform logs
@@ -86,4 +84,4 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -input=false
+        run: terraform apply -input=false
