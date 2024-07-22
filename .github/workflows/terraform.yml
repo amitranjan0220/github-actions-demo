@@ -87,12 +87,15 @@ jobs:
             })
 
       - name: Wait for approval
-        uses: amitranjan0220/wait-for-approval@v1
+        uses: macnev2013/manual-approval@latest
         with:
-          issue-number: ${{ steps.send_approval_request.outputs.number }}
-          repository-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Deploy to production
-        run: echo deploying
+          secret: ${{ github.TOKEN }}
+          approvers: user1,user2
+          minimum-approvals: 1
+          approval-wait: 600
+          issue-title: 'Manual Approval'
+          issue-body: |
+            "Issue Body"
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
