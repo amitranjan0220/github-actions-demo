@@ -5,17 +5,7 @@ on:
      workflows: ["Build"]
      types: [requested]
      branches:
-       - 'releases/**'
- push:
-   branches:
-   - main
-   paths:
-   - terraform/**
- pull_request:
-   branches:
-   - main
-   paths:
-   - terraform/**
+       - main
 
 env:
  # verbosity setting for Terraform logs
