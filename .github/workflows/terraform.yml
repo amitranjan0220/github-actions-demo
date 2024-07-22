@@ -1,6 +1,11 @@
 name: "Terraform CI CD using Github Actions"
 
 on:
+ workflow_run:
+     workflows: ["Build"]
+     types: [requested]
+     branches:
+       - 'releases/**'
  push:
    branches:
    - main
