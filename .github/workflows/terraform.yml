@@ -87,7 +87,7 @@ jobs:
             })
 
       - name: Wait for approval
-        uses: andstor/wait-for-approval@v1
+        uses: amitranjan0220/wait-for-approval@v1
         with:
           issue-number: ${{ steps.send_approval_request.outputs.number }}
           repository-token: ${{ secrets.GITHUB_TOKEN }}
