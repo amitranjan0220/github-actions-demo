@@ -15,6 +15,7 @@ jobs:
   terraform:
     name: "Terraform Infrastructure Change Management"
     runs-on: ubuntu-latest
+    environment: Development
     defaults:
      run:
        shell: bash
@@ -86,13 +87,7 @@ jobs:
               body: output
             })
 
-      - name: Manual Approval
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: trstringer/manual-approval@v1
-        with:
-          approvers: 'amitranjan0220'
-          cancel-on-requested-changes: true
-
+       
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve tfplan
