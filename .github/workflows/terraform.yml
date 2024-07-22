@@ -43,8 +43,8 @@ jobs:
       # Run a terraform validate
       - name: Terraform Validate
         id: validate
-        run: terraform fmt -check
-      
+        run: terraform validate  -no-color
+        
       - name: Terraform plan
         id: plan
         if: github.event_name == 'pull_request'
