@@ -87,12 +87,12 @@ jobs:
             })
 
       - name: Manual Approval
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: trstringer/manual-approval@v1
         with:
-          secret: ${{ secrets.GITHUB_TOKEN }}
-          approvers: 'amitranjan0220'
-          cancel-on-requested-changes: true
+          secret: ${{ github.TOKEN }}
+          approvers: amitranjan0220
+      - name: Deploy to production
+        run: echo deploying
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
