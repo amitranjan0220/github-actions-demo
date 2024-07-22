@@ -2,6 +2,7 @@ name: "Terraform CI CD using Github Actions"
 
 on: 
  workflow_dispatch:
+ push:
 
 env:
  # verbosity setting for Terraform logs
