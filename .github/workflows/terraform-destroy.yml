@@ -1,0 +1,50 @@
+name: "Terraform Destroy"
+
+on: workflow_dispatch
+
+env:
+ # verbosity setting for Terraform logs
+ TF_LOG: INFO
+ # Credentials for deployment to AWS
+ AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+ AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+ 
+jobs:
+  Terraform_plan:
+    name: "Terraform Validate & Destroy"
+    runs-on: ubuntu-latest
+    environment: Development
+    defaults:
+     run:
+       shell: bash
+       # We keep Terraform files in the terraform directory.
+       working-directory: ./terraform
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+         # Install the selected version of Terraform CLI 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ secrets.TERRAFORM_VERSION }}
+
+      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - name: Terraform init
+        id: init
+        run: terraform init 
+        
+        # Run a terraform fmt to check syntax
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+
+      # Run a terraform validate
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate  -no-color
+      
+      # Run a terraform Delete
+      - name: Terraform delete 
+        run: terraform delete  -auto-approve
+
