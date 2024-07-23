@@ -1,4 +1,4 @@
-name: "Terraform CI CD using Github Actions"
+name: "Terraform CI CD"
 
 on: [push,workflow_dispatch]
 
@@ -12,10 +12,9 @@ env:
  #BUCKET_TF_STATE: ${{ secrets.BUCKET_TF_STATE}}
 
 jobs:
-  terraform:
-    name: "Terraform Infrastructure Change Management"
+  Terraform_plan:
+    name: "Terraform Plan & Validate"
     runs-on: ubuntu-latest
-    environment: Development
     defaults:
      run:
        shell: bash
@@ -45,18 +44,43 @@ jobs:
       - name: Terraform Validate
         id: validate
         run: terraform validate  -no-color
-        
+
+      # Run a terraform plan
       - name: Terraform plan
         id: plan
         if: github.event_name == 'push'
         run: terraform plan -no-color -input=false -out=tfplan
-        continue-on-error: true
-    
-     
-      - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
-        run: exit 1
         
+  Terraform_Deploy:
+    name: "Terraform validate and apply"
+    runs-on: ubuntu-latest
+    environment: Development
+    defaults:
+     run:
+      shell: bash
+      # We keep Terraform files in the terraform directory.
+      working-directory: ./terraform
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+    
+        # Install the selected version of Terraform CLI 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ secrets.TERRAFORM_VERSION }}
+    
+        # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - name: Terraform init
+        id: init
+        run: terraform init -backend-config="bucket=$BUCKET_TF_STATE"
+           
+        # Run a terraform validate
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate  -no-color        
+           
+        # Run a terraform apply
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply  tfplan
+        run: terraform apply  
