@@ -44,7 +44,7 @@ jobs:
         id: validate
         run: terraform validate  -no-color
       
-      # Run a terraform Delete
-      - name: Terraform delete 
-        run: terraform delete  -auto-approve
+      # Run a terraform Destroy
+      - name: Terraform destroy 
+        run: terraform destroy  -auto-approve
 
