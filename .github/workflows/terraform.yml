@@ -118,4 +118,4 @@ jobs:
            
         # Run a terraform apply
       - name: Terraform Apply 
-        run: terraform apply  -auto-apporve
+        run: terraform apply  -auto-approve
