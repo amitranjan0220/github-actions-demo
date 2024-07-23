@@ -9,7 +9,7 @@ env:
  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
  # S3 bucket for the Terraform state
- #BUCKET_TF_STATE: ${{ secrets.BUCKET_TF_STATE}}
+ BUCKET_TF_STATE: ${{ secrets.BUCKET_TF_STATE}}
 
 jobs:
   Terraform_plan:
@@ -52,7 +52,7 @@ jobs:
         run: terraform plan -no-color -input=false -out=tfplan
         
   Terraform_Deploy:
-    name: "Terraform validate and apply"
+    name: "Terraform Validate and Apply"
     runs-on: ubuntu-latest
     environment: Development
     defaults:
